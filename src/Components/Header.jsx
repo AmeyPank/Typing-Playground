@@ -1,16 +1,59 @@
 import React from "react";
 import AccountIcon from "./AccountCircle";
-
+import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
 // import CompareButton from './CompareButton'
-
-import LOGO from "../logo.png";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import InfoIcon from "@mui/icons-material/Info";
+import { IconButton, Tooltip } from "@mui/material";
+import CrownIcon from "@material-ui/icons/EmojiEvents";
 const Header = () => {
+  const iconStyle = {
+    boxSizing: "border-box",
+    marginTop: "18px",
+    paddingRight: "5px",
+    scale: "1.5",
+    cursor: "pointer",
+    marginBottom: "auto",
+  };
+
+  // Define tooltipTitleStyle constant
+  const tooltipTitleStyle = {
+    color: "white", // Set the desired text color
+    fontSize: "16px", // Set the desired font size
+  };
   return (
     <div className="header">
       <div className="logo">
-        <img src={LOGO} alt="" />
+        <h1 style={{ fontFamily: "Lexend Deca" }}>funkeytype</h1>
+        <span
+          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+        >
+          <KeyboardRoundedIcon style={{ marginLeft: "8px" }} />
+          <CrownIcon style={{ marginLeft: "8px" }} />
+          <InfoIcon style={{ marginLeft: "8px" }} />
+        </span>
       </div>
-      <div className="user-logo" style={{ marginTop: "15px" }}>
+      <div
+        className="user-logo"
+        style={{
+          marginTop: "15px",
+          cursor: "pointer",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <Tooltip
+          title={<span style={tooltipTitleStyle}>Notification</span>}
+          placement="top"
+          enterDelay={500}
+          arrow
+          classes={{
+            tooltip: "custom-tooltip",
+          }}
+        >
+          <NotificationsIcon style={iconStyle} />
+        </Tooltip>
+
         <AccountIcon />
       </div>
     </div>

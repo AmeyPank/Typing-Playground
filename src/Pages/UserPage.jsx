@@ -6,7 +6,8 @@ import { CircularProgress } from "@mui/material";
 import UserDataTable from "../Components/UserDataTable";
 import Graph from "../Components/Graph";
 import UserInfo from "../Components/UserInfo";
-
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
 const UserPage = () => {
   const [data, setData] = useState([]);
   const [graphData, setGraphData] = useState([]);
@@ -25,7 +26,7 @@ const UserPage = () => {
       .orderBy("timeStamp", "desc")
       .get()
       .then((snapshot) => {
-        console.log(snapshot);
+        // console.log(snapshot);
         snapshot.docs.forEach((doc) => {
           // ==========================================console.log(doc.data()); // to get the data from the snapshot
           tempData.push({ ...doc.data() });
@@ -70,11 +71,19 @@ const UserPage = () => {
 
   return (
     <div className="canvas">
-      <UserInfo totalTestsTaken={data.length} />
-      <div className="graph">
-        <Graph graphData={graphData} type="date" />
+      <Header />
+      <div>
+        <UserInfo totalTestsTaken={data.length} />
+        {data.length !== 0 ? (
+          <div className="graph">
+            <Graph graphData={graphData} type="date" />
+          </div>
+        ) : (
+          <p>No data found</p>
+        )}
+        {data.length !== 0 && <UserDataTable data={data} />}
       </div>
-      <UserDataTable data={data} />
+      <Footer />
     </div>
   );
 };

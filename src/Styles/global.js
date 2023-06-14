@@ -6,8 +6,11 @@ export const GlobalStyles = createGlobalStyle`
 *{
     box-sizing: border-box;
 }
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lexend+Deca:wght@100;200;300;400;500;600;700;800;900&family=Michroma&display=swap');
 body{
+    font-family: 'Inter', sans-serif;
+    font-family: 'Lexend Deca', sans-serif;
+    font-family: 'Michroma', sans-serif;
     background:${({ theme }) => theme.background};
     color: ${({ theme }) => theme.title};
     padding:0;
@@ -16,44 +19,44 @@ body{
     overflow-y: scroll;
     width: 100%;
 
+
 }
 
 body::-webkit-scrollbar{
     display: none;
 }
 
-.canvas{
+.canvas {
     display: grid;
     min-height: 100vh;
     grid-auto-flow: row;
-    grid-template-row: auto 1fr auto;
+    grid-template-rows: auto 1fr auto;
     gap: 0.5rem;
-    padding:2rem;
-    width:100vw;
-    text-align: center;
+    padding: 1.2rem;
+    width: 100% !important;
+    -webkit-box-align: center;
     align-items: center;
+    text-align: center;
 }
-.middle-div{
-    height:auto;
-}
+
 .type-box{
     display:block;
-    max-width: 1000px;
+    max-width: 100%;
     height: 140px;
     margin-left:auto;
     margin-right:auto;
     overflow: hidden;
 }
 
-.words{
+.words {
     font-size: 32px;
     display: flex;
-    width: 100%;
+    width: 81%;
     margin-left: auto;
     margin-right: auto;
     flex-wrap: wrap;
     height: auto;
-    align-content:center;
+    align-content: center;
     color: ${({ theme }) => theme.typeBoxText}
 }
 
@@ -104,16 +107,16 @@ body::-webkit-scrollbar{
     color: grey;
 }
 
-.footer{
-    border-top: 2px solid;
-
-    display:flex;
-    flex-direction: column;
-    align-self: end;
-       width: 80%;
-
-    margin-left:auto;
-    margin-right:auto;
+.footer {
+    width: 90%;
+    display: flex;
+ 
+    justify-content: space-between;
+   
+    align-items: center;
+    padding: 1rem 0px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .hint{
     text-align: center;
@@ -126,7 +129,7 @@ body::-webkit-scrollbar{
 
 .stats-box{
     display: flex;
-    max-width: 1000px;
+    max-width: 80%;
     height: auto;
     margin-left: auto;
     margin-right: auto;
@@ -135,6 +138,7 @@ body::-webkit-scrollbar{
 .left-stats{
     width: 30%;
     padding: 30px;
+    height: 300px;
 }
 
 .right-stats{
@@ -156,15 +160,14 @@ a{
     color: inherit;
 }
 
-.upper-menu{
-    display:flex;
-        width: 80%;
+.upper-menu {
+    width: 80%;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.3rem;
 
-    margin-left:auto;
-    margin-right:auto;
-    justify-content:space-between;
-    font-size:1.35rem;
-    padding:0.5rem;
+    justify-content: space-between;
 }
 
 .time-modes, .word-modes{
@@ -178,28 +181,20 @@ a{
     cursor: pointer;
 }
 
-.header{
+.header {
+    width: 90%;
     display: flex;
-    width: 80%;
-    align-self: stretch;
+
+    justify-content: space-between;
+    padding: 1rem 0px;
     margin-left: auto;
     margin-right: auto;
-    height: 10rem;
-    justify-content: space-between;
-    border-bottom: 2px solid;
 }
 
-.github-button{
-    width: 400px;
-    text-align: center;
-    background: blue;
-    height: 3rem;
-    border: 2px solid;
-    border-radius: 10px;
-}
 
 .user-profile{
-    width: 80%;
+    width: 1000px;
+    margin-top:60px;
     margin: auto;
     display: flex;
     min-height: 15rem;
@@ -232,17 +227,20 @@ a{
     width: 50%;
     font-size: 3rem;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 .table{
-    width: 80%;
+    width: 1000px;
+
 
     margin: auto;
 }
 .graph{
-width: 80%;
+width: 1000px;
+height: 500px;
 margin-left: auto;
 margin-right: auto;
 
@@ -259,10 +257,7 @@ margin-right: auto;
 
 .logo{
     display: flex;
-    gap: 10px;
     justify-content: center;
-    margin-top: 10px;
-    align-items: start;
 }
 
 .compare-btn{
@@ -300,17 +295,14 @@ margin-right: auto;
     margin-top: -4px;
 }
 
-.logo-image{
-    transform: scale(0.3);
-    margin-top: -100px;
-    margin-left: -90px;
-    display: block;
-}
 
 .mode{
     cursor: pointer;
 }
 .themes {
+    display:flex;
+    gap: 1em;
+    align-items:center;
   width: 200px; /* Set the desired width */
 }
 

@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { AppBar, Box, Modal, Tab, Tabs } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Modal,
+  Tab,
+  Tabs,
+  Tooltip,
+} from "@mui/material";
 import { LoginForm } from "./LoginForm";
 import { SignUpForm } from "./SignUpForm";
 import { useTheme } from "../Context/ThemeContext";
@@ -20,11 +28,34 @@ const AccountCircle = () => {
   const { theme } = useTheme();
   const [user] = useAuthState(auth);
 
+  const iconStyle = {
+    boxSizing: "border-box",
+    marginTop: "18px",
+    paddingLeft: "5px",
+    scale: "1.5",
+    cursor: "pointer",
+    marginBottom: "auto",
+  };
+  // Define tooltipStyle constant
+  // const tooltipStyle = {
+  //   backgroundColor: theme.background,
+  //   color: "#fff",
+  //   fontSize: "14px",
+  //   borderRadius: "4px",
+  //   padding: "8px 12px",
+  // };
+
+  // Define tooltipTitleStyle constant
+  const tooltipTitleStyle = {
+    color: "white", // Set the desired text color
+    fontSize: "16px", // Set the desired font size
+  };
   const logout = () => {
     auth
       .signOut()
       .then((res) => {
         toast.success("Logged out successfully");
+        navigate("/");
       })
       .catch((err) => {
         toast.error("Not Able to logout");
@@ -63,8 +94,38 @@ const AccountCircle = () => {
   };
   return (
     <div>
-      <AccountCircleIcon onClick={handleModalOpen} />
-      {user && <LogoutIcon onClick={logout} />}
+      <Tooltip
+        title={<span style={tooltipTitleStyle}>Profile</span>}
+        placement="top"
+        enterDelay={500}
+        arrow
+        classes={{
+          tooltip: "custom-tooltip",
+        }}
+      >
+        <AccountCircleIcon
+          onClick={handleModalOpen}
+          style={{ ...iconStyle, marginRight: "8px" }}
+        />
+      </Tooltip>
+      {user && (
+        <>
+          <Tooltip
+            title={<span style={tooltipTitleStyle}>Logout</span>}
+            placement="top"
+            enterDelay={500}
+            arrow
+            classes={{
+              tooltip: "custom-tooltip",
+            }}
+          >
+            <LogoutIcon
+              onClick={logout}
+              style={{ ...iconStyle, marginRight: "4px" }}
+            />
+          </Tooltip>
+        </>
+      )}
       <Modal
         open={open}
         onClose={handleClose}

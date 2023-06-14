@@ -4,7 +4,10 @@ import { useTheme } from "../Context/ThemeContext";
 import { themeOptions } from "../Utils/theme";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import GoToTop from "./GoToTop";
 const Footer = () => {
   const { theme, setTheme, defaultTheme } = useTheme();
 
@@ -17,59 +20,68 @@ const Footer = () => {
 
   return (
     <div className="footer">
-      <div className="intructions">
-        <div className="hint">
-          press <kbd>TAB</kbd> to open commands
-        </div>
+      <div className="links">
+        <a href="https://github.com/AmeyPank" target="_blank" rel="noreferrer">
+          <GitHubIcon style={{ marginRight: "4px" }} />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/amey-pankanti-260898189/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <LinkedInIcon style={{ marginRight: "4px" }} />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/amey-pankanti-260898189/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FacebookIcon style={{ marginRight: "4px" }} />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/amey-pankanti-260898189/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <InstagramIcon style={{ marginRight: "4px" }} />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/amey-pankanti-260898189/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <WhatsAppIcon style={{ marginRight: "4px" }} />
+        </a>
       </div>
 
-      <div className="actual-footer">
-        <div className="links">
-          <a
-            href="https://github.com/AmeyPank"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <GitHubIcon style={{ marginRight: "4px" }} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/amey-pankanti-260898189/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <LinkedInIcon />
-          </a>
-        </div>
-
-        <div className="themes">
-          <Select
-            options={themeOptions}
-            onChange={handleThemeChange}
-            menuPlacement="top"
-            defaultValue={{ value: defaultTheme, label: defaultTheme.label }}
-            styles={{
-              control: (styles) => ({
+      <div className="themes">
+        <Select
+          options={themeOptions}
+          onChange={handleThemeChange}
+          menuPlacement="top"
+          defaultValue={{ value: defaultTheme, label: defaultTheme.label }}
+          styles={{
+            control: (styles) => ({
+              ...styles,
+              backgroundColor: theme.background,
+            }),
+            menu: (styles) => ({
+              ...styles,
+              backgroundColor: theme.background,
+            }),
+            option: (styles, { isFocused }) => {
+              return {
                 ...styles,
-                backgroundColor: theme.background,
-              }),
-              menu: (styles) => ({
-                ...styles,
-                backgroundColor: theme.background,
-              }),
-              option: (styles, { isFocused }) => {
-                return {
-                  ...styles,
-                  backgroundColor: isFocused
-                    ? theme.background
-                    : theme.textColor,
-                  color: isFocused ? theme.textColor : theme.typeBoxText,
-                  cursor: "pointer",
-                };
-              },
-              singleValue: (styles) => ({ ...styles, color: theme.title }),
-            }}
-          />
-        </div>
+                backgroundColor: isFocused ? theme.background : theme.textColor,
+                color: isFocused ? theme.textColor : theme.typeBoxText,
+                cursor: "pointer",
+              };
+            },
+            singleValue: (styles) => ({ ...styles, color: theme.title }),
+          }}
+        />
+        
+        <GoToTop />
       </div>
     </div>
   );

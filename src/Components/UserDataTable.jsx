@@ -21,12 +21,12 @@ const UserDataTable = ({ data }) => {
               <TableCell style={cellStyle}>WPM</TableCell>
               <TableCell style={cellStyle}>Accuracy</TableCell>
               <TableCell style={cellStyle}>Characters</TableCell>
-              <TableCell style={cellStyle}>Data</TableCell>
+              <TableCell style={cellStyle}>Date & Time</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((data) => (
-              <TableRow>
+            {data.map((data, i) => (
+              <TableRow key={i}>
                 <TableCell style={cellStyle}>{data.wpm}</TableCell>
                 <TableCell style={cellStyle}>{data.accuracy}</TableCell>
                 <TableCell style={cellStyle}>{data.characters}</TableCell>

@@ -41,17 +41,26 @@ body::-webkit-scrollbar{
 
 .type-box{
     display:block;
-    max-width: 100%;
-    height: 140px;
+    width: 100%;
+    height: 170px;
     margin-left:auto;
     margin-right:auto;
     overflow: hidden;
+
+}
+.type-box::-webkit-scrollbar {
+  display: none; /* Hide the scrollbar for webkit-based browsers */
+}
+.type-box {
+  scrollbar-width: none; /* Hide the scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide the scrollbar for IE/Edge */
 }
 
+
 .words {
-    font-size: 32px;
+    font-size: 30px;
     display: flex;
-    width: 81%;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
     flex-wrap: wrap;
@@ -205,6 +214,7 @@ a{
 }
 
 .user{
+    
     width: 50%;
     display: flex;
     margin-top: 30px;
@@ -215,6 +225,7 @@ a{
 }
 
 .info{
+overflow: 
     width: 60%;
     padding: 1rem;
     margin-top: 1rem;
@@ -305,5 +316,6 @@ margin-right: auto;
     align-items:center;
   width: 200px; /* Set the desired width */
 }
+
 
 `;

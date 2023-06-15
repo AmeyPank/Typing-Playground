@@ -1,4 +1,10 @@
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  createRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import UpperMenu from "./UpperMenu";
 import { useTestMode } from "../Context/TestModeContext";
 import { generate as randomWords } from "random-words";
@@ -11,10 +17,19 @@ import LanguageIcon from "@mui/icons-material/Language";
 
 const TypingBox = () => {
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
+  const [initialRender, setInitialRender] = useState(false);
   const { theme } = useTheme();
+  const { testTime, testWords, testMode } = useTestMode(); //from context
+  const [countDown, setCountDown] = useState(() => {
+    if (testMode === "word") return 180;
+    return testTime;
+  });
 
-  const { testTime } = useTestMode();
-  const [countDown, setCountDown] = useState(testTime);
+  const [time, setTime] = useState(() => {
+    if (testMode === "time") return 180;
+    return testTime;
+  });
   const [intervalId, setIntervalId] = useState(null);
   const [testStart, setTestStart] = useState(false);
   const [testEnd, setTestEnd] = useState(false);
@@ -30,12 +45,69 @@ const TypingBox = () => {
   // --------------------> WPM function --------------------
 
   const [wordsArray, setWordsArray] = useState(() => {
-    return randomWords(50);
+    return randomWords(300);
   });
-
   const [currWordIndex, setCurrWordIndex] = useState(0);
   const [currCharIndex, setCurrCharIndex] = useState(0);
   const [graphData, setGraphData] = useState([]); //Graph data for state
+  const emptySpans = () => {
+    return Array(wordsArray.length)
+      .fill(0)
+      .map((i) => createRef(null));
+  };
+
+  const [wordsSpanRef, setWordsSpanRef] = useState(emptySpans());
+
+  const resetTest = () => {
+    clearInterval(intervalId);
+    setCountDown(testTime);
+    setCurrWordIndex(0);
+    setCurrCharIndex(0);
+    setTestStart(false);
+    setTestEnd(false);
+    setWordsArray(randomWords(100));
+    resetWordSpanRefClassname();
+    focusInput();
+
+    if (testMode === "word") {
+      setWordsArray(randomWords(testWords));
+      wordsSpanRef(emptySpans());
+      setCountDown(180);
+      setTime(180);
+    } else {
+      setWordsArray(randomWords(300));
+      setWordsSpanRef(emptySpans());
+      setCountDown(testTime);
+      setTime(testTime);
+    }
+  };
+  const redoTest = () => {
+    try {
+      setCurrCharIndex(0);
+      setCurrWordIndex(0);
+      setTestStart(false);
+      setTestEnd(false);
+      clearInterval(intervalId);
+      if (testMode === "word") {
+        setCountDown(180);
+        setTime(180);
+      } else {
+        setCountDown(testTime);
+        setTime(testTime);
+      }
+      setGraphData([]);
+      setWordsArray(randomWords(300));
+      setCorrectCharacter(0);
+      setCorrectWords(0);
+      setExtraCharacter(0);
+      setInCorrectCharacter(0);
+      setMissedCharacter(0);
+      resetWordSpanRefClassname();
+      focusInput();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Define tooltipStyle constant
   const tooltipStyle = {
@@ -48,8 +120,8 @@ const TypingBox = () => {
 
   // Define tooltipTitleStyle constant
   const tooltipTitleStyle = {
-    color: "white", // Set the desired text color
-    fontSize: "16px", // Set the desired font size
+    color: "white",
+    fontSize: "16px",
   };
   // -------------------->Start Timer --------------------
   const startTimer = () => {
@@ -64,8 +136,8 @@ const TypingBox = () => {
             return [
               ...graphData,
               [
-                testTime - latestCountDown + 1,
-                correctCharacter / 5 / ((testTime - latestCountDown + 1) / 60),
+                time - latestCountDown + 1,
+                correctCharacter / 5 / ((time - latestCountDown + 1) / 60),
               ],
             ];
           });
@@ -82,45 +154,61 @@ const TypingBox = () => {
     }
   };
 
-  const resetTest = () => {
-    clearInterval(intervalId);
-    setCountDown(testTime);
-    setCurrWordIndex(0);
-    setCurrCharIndex(0);
-    setTestStart(false);
-    setTestEnd(false);
-    setWordsArray(randomWords(60));
-    resetWordSpanRefClassName();
-    focusInput();
-  };
-
-  const backToTest = () => {
-    try {
-      resetTest();
-    } catch (error) {
-      // Handle the error here
-      console.error("An error occurred during backToTest:", error);
-    }
-  };
-
-  // --------------------> WordsSpanRef Memo for getting words array --------------------
-  const wordsSpanRef = useMemo(() => {
-    return Array(wordsArray.length)
-      .fill(0)
-      .map((i) => createRef(null));
-  }, [wordsArray]);
-
-  const resetWordSpanRefClassName = () => {
-    wordsSpanRef.forEach((ref) => {
-      Array.from(ref.current.childNodes)?.forEach((node) => {
-        node.className = "";
+  const resetWordSpanRefClassname = () => {
+    wordsSpanRef.map((i) => {
+      Array.from(i.current.childNodes).map((j) => {
+        if (j.className.includes("extra")) {
+          j.remove();
+        }
+        j.className = "char";
       });
     });
-    wordsSpanRef[0].current.childNodes[0].className = "current";
+    wordsSpanRef[0].current.childNodes[0].className = "char current";
   };
-
   // -------------------->Handle the user input keyboard input --------------------
 
+  // --------------------> WPM function --------------------
+
+  const calculateWPM = () => {
+    return Math.round(correctCharacter / 5 / (testTime / 60));
+  };
+
+  // --------------------> CorrectAccuracy function --------------------
+
+  const correctAccuracy = () => {
+    return Math.round((correctWords / currWordIndex) * 100);
+  };
+  // --------------------> focusInput function --------------------
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  useEffect(() => {
+    focusInput();
+    // Update the state to set the initial class name
+    wordsSpanRef[0].current.childNodes[0].className = "char current";
+  }, []);
+
+  useLayoutEffect(() => {
+    if (initialRender) {
+      console.log("initialRender");
+      resetTest();
+    } else {
+      setInitialRender(true); //
+    }
+  }, [testTime, testWords, testMode]);
+  // Add a new useEffect to set the initial class name when wordsSpanRef is updated
+  useEffect(() => {
+    if (wordsSpanRef[0] && wordsSpanRef[0].current) {
+      const firstChild = wordsSpanRef[0].current.childNodes[0];
+      if (firstChild) {
+        firstChild.className = "current";
+      }
+    }
+  }, [wordsSpanRef]);
+
+  // -------------------->handleUserInput--------------------------------
   const handleUserInput = (e) => {
     try {
       if (!testStart) {
@@ -146,6 +234,13 @@ const TypingBox = () => {
         // --------------------> Logic for spaces --------------------
 
         if (e.keyCode === 32) {
+          if (currWordIndex === wordsArray.length - 1) {
+            clearInterval(intervalId);
+            setCurrWordIndex(currWordIndex + 1);
+            setTestEnd(true);
+            return;
+          }
+
           let correctCharsInWords =
             wordsSpanRef[currWordIndex].current.querySelectorAll(".correct");
           if (correctCharsInWords.length === allCurrChars.length) {
@@ -166,31 +261,42 @@ const TypingBox = () => {
               allCurrChars[i].className += " skipped";
             }
 
-            allCurrChars[currCharIndex].classList.remove("current");
+            // allCurrChars[currCharIndex].classList.remove("current");
+            allCurrChars[currCharIndex].className = allCurrChars[
+              currCharIndex
+            ].className.replace("current", "");
+          }
+
+          //scrollinig line condition
+          if (
+            wordsSpanRef[currWordIndex + 1].current.offsetLeft <
+            wordsSpanRef[currWordIndex].current.offsetLeft
+          ) {
+            wordsSpanRef[currWordIndex].current.scrollIntoView();
           }
           // place cursor to beginning
-          wordsSpanRef[currWordIndex + 1].current.childNodes[0].className +=
-            "current";
+          wordsSpanRef[currWordIndex + 1].current.childNodes[0].className =
+            "char current";
           setCurrWordIndex(currWordIndex + 1);
           setCurrCharIndex(0);
+
           return;
         }
         if (e.keyCode === 8) {
           // --------------------> Logic for backspace handling --------------------
 
           if (currCharIndex !== 0) {
-            if (allCurrChars.length === currCharIndex) {
+            if (currCharIndex === allCurrChars.length) {
               if (
                 allCurrChars[currCharIndex - 1] &&
                 allCurrChars[currCharIndex - 1].className.includes("extra")
               ) {
                 allCurrChars[currCharIndex - 1].remove();
-
                 allCurrChars[currCharIndex - 2].className += " current-right";
               }
 
               if (allCurrChars[currCharIndex - 1]) {
-                allCurrChars[currCharIndex - 1].className = "current";
+                allCurrChars[currCharIndex - 1].className = "char current";
               }
               setCurrCharIndex(currCharIndex - 1);
 
@@ -208,26 +314,33 @@ const TypingBox = () => {
         if (currCharIndex === allCurrChars.length) {
           let newSpan = document.createElement("span");
           newSpan.innerText = e.key;
-          newSpan.className = "incorrect extra current-right";
+          newSpan.className = "char incorrect extra current-right";
           allCurrChars[currCharIndex - 1].classList.remove("current-right");
           wordsSpanRef[currWordIndex].current.append(newSpan);
           setCurrCharIndex(currCharIndex + 1);
-          setExtraCharacter(extraCharacter + 1);
+          // setExtraCharacter(extraCharacter + 1);
           return;
         }
 
         if (e.key === allCurrChars[currCharIndex].innerText) {
-          allCurrChars[currCharIndex].className = "correct";
+          allCurrChars[currCharIndex].className = "char correct";
           setCorrectCharacter(correctCharacter + 1);
-        } else {
-          allCurrChars[currCharIndex].className = "incorrect";
+          if(currWordIndex === wordsArray.length + 1 && currCharIndex === allCurrChars.length-1){
+            clearInterval(intervalId);
+            setCurrWordIndex(currWordIndex+1);
+            setTestEnd(true);
+            return;
+
+          }
+        }else {
+          allCurrChars[currCharIndex].className = "char incorrect";
           setInCorrectCharacter(inCorrectCharacter + 1);
         }
 
         if (currCharIndex + 1 === allCurrChars.length) {
           allCurrChars[currCharIndex].className += " current-right";
         } else {
-          allCurrChars[currCharIndex + 1].className += "current";
+          allCurrChars[currCharIndex + 1].className += "char current";
         }
         setCurrCharIndex(currCharIndex + 1);
       }
@@ -236,45 +349,6 @@ const TypingBox = () => {
       console.error("An error occurred during handleUserInput");
     }
   };
-
-  // --------------------> WPM function --------------------
-
-  const calculateWPM = () => {
-    return Math.round(correctCharacter / 5 / (testTime / 60));
-  };
-
-  // --------------------> CorrectAccuracy function --------------------
-
-  const correctAccuracy = () => {
-    return Math.round((correctWords / currWordIndex) * 100);
-  };
-  // --------------------> focusInput function --------------------
-
-  const focusInput = () => {
-    inputRef.current.focus();
-  };
-
-  useEffect(() => {
-    resetTest();
-  }, [testTime]);
-
-  useEffect(() => {
-    focusInput();
-    // Update the state to set the initial class name
-    setCurrWordIndex(0);
-    setCurrCharIndex(0);
-    setWordsArray(randomWords(60));
-  }, []);
-
-  // Add a new useEffect to set the initial class name when wordsSpanRef is updated
-  useEffect(() => {
-    if (wordsSpanRef[0] && wordsSpanRef[0].current) {
-      const firstChild = wordsSpanRef[0].current.childNodes[0];
-      if (firstChild) {
-        firstChild.className = "current";
-      }
-    }
-  }, [wordsSpanRef]);
 
   return (
     <div>
@@ -303,7 +377,9 @@ const TypingBox = () => {
       {testEnd ? (
         <div>
           <div>
-            <Button onClick={backToTest}>Repeat test</Button>
+            <Button variant="contained" onClick={redoTest}>
+              Repeat test
+            </Button>
           </div>
           <Stats
             wpm={calculateWPM()}
@@ -318,18 +394,25 @@ const TypingBox = () => {
         </div>
       ) : (
         <div className="box">
-          <div className="type-box" onClick={focusInput}>
+          <div
+            className="type-box"
+            id="type-box"
+            ref={containerRef}
+            onClick={focusInput}
+          >
             <div className="words">
               {wordsArray.map((word, index) => (
                 <span className="word" key={index} ref={wordsSpanRef[index]}>
                   {word.split("").map((char, charIndex) => (
-                    <span key={charIndex}>{char}</span>
+                    <span className="char" key={charIndex}>
+                      {char}
+                    </span>
                   ))}
                 </span>
               ))}
             </div>
           </div>
-          <div>
+          <div className="lower-menu">
             <Tooltip
               title={<span style={tooltipTitleStyle}>Reset</span>}
               placement="bottom"
@@ -340,8 +423,8 @@ const TypingBox = () => {
               }}
               style={tooltipStyle}
             >
-              <IconButton onClick={resetTest} color="inherit">
-                <RefreshIcon />
+              <IconButton onClick={redoTest} color="inherit">
+                <RefreshIcon style={{ marginTop: "20px" }} />
               </IconButton>
             </Tooltip>
           </div>

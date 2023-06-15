@@ -31,8 +31,7 @@ const navigate = useNavigate()
           />
         </div>
         <div className="info">
-          <div className="name">{user.displayName || user.email}</div>
-
+          <div className="name">{user.displayName}</div>
           <div className="email">{user.email}</div>
           <div className="joined-at"> {user.metadata.creationTime}</div>
         </div>

@@ -22,7 +22,7 @@ const GoToTop = () => {
     });
   };
 
-  
+
   // Attach scroll event listener
   React.useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -37,5 +37,4 @@ const GoToTop = () => {
     </div>
   );
 };
-
 export default GoToTop

@@ -5,7 +5,7 @@ import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconButton, Tooltip } from "@mui/material";
-import CrownIcon from "@material-ui/icons/EmojiEvents";
+
 const Header = () => {
   const iconStyle = {
     boxSizing: "border-box",
@@ -29,7 +29,6 @@ const Header = () => {
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
           <KeyboardRoundedIcon style={{ marginLeft: "8px" }} />
-          <CrownIcon style={{ marginLeft: "8px" }} />
           <InfoIcon style={{ marginLeft: "8px" }} />
         </span>
       </div>

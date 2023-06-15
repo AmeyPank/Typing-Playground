@@ -4,7 +4,8 @@ import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
 // import CompareButton from './CompareButton'
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import InfoIcon from "@mui/icons-material/Info";
-import { IconButton, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 
 const Header = () => {
   const iconStyle = {
@@ -29,6 +30,7 @@ const Header = () => {
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
           <KeyboardRoundedIcon style={{ marginLeft: "8px" }} />
+          <MilitaryTechIcon style={{ marginLeft: "8px" }} />
           <InfoIcon style={{ marginLeft: "8px" }} />
         </span>
       </div>

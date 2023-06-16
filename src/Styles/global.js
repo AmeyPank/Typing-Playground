@@ -252,7 +252,7 @@ overflow:
 }
 .graph{
 width: 1000px;
-height: 1200px;
+height: 500px;
 margin-left: auto;
 margin-right: auto;
 

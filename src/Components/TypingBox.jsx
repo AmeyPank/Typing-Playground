@@ -203,6 +203,7 @@ const TypingBox = () => {
     } else {
       setInitialRender(true); //
     }
+    redoTest();
   }, [testTime, testWords, testMode, initialRender]);
   // Add a new useEffect to set the initial class name when wordsSpanRef is updated
   useEffect(() => {

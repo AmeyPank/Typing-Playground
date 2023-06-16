@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -5,13 +6,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button,
 } from "@mui/material";
-import React from "react";
 import { useTheme } from "../Context/ThemeContext";
 
 const UserDataTable = ({ data }) => {
   const { theme } = useTheme();
   const cellStyle = { color: theme.title, textAlign: "center" };
+
+  const [visibleRows, setVisibleRows] = useState(20);
+
+  const handleShowMore = () => {
+    setVisibleRows((prevVisibleRows) => prevVisibleRows + 20);
+  };
+
   return (
     <div className="table">
       <TableContainer>
@@ -25,19 +33,24 @@ const UserDataTable = ({ data }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((data, i) => (
+            {data.slice(0, visibleRows).map((rowData, i) => (
               <TableRow key={i}>
-                <TableCell style={cellStyle}>{data.wpm}</TableCell>
-                <TableCell style={cellStyle}>{data.accuracy}</TableCell>
-                <TableCell style={cellStyle}>{data.characters}</TableCell>
+                <TableCell style={cellStyle}>{rowData.wpm}</TableCell>
+                <TableCell style={cellStyle}>{rowData.accuracy}</TableCell>
+                <TableCell style={cellStyle}>{rowData.characters}</TableCell>
                 <TableCell style={cellStyle}>
-                  {data.timeStamp.toDate().toLocaleString()}
+                  {rowData.timeStamp.toDate().toLocaleString()}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      {visibleRows < data.length && (
+        <Button onClick={handleShowMore} variant="contained">
+          Show More
+        </Button>
+      )}
     </div>
   );
 };

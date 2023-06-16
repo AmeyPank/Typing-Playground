@@ -3,7 +3,6 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   AppBar,
   Box,
-  IconButton,
   Modal,
   Tab,
   Tabs,
@@ -36,14 +35,7 @@ const AccountCircle = () => {
     cursor: "pointer",
     marginBottom: "auto",
   };
-  // Define tooltipStyle constant
-  // const tooltipStyle = {
-  //   backgroundColor: theme.background,
-  //   color: "#fff",
-  //   fontSize: "14px",
-  //   borderRadius: "4px",
-  //   padding: "8px 12px",
-  // };
+
 
   // Define tooltipTitleStyle constant
   const tooltipTitleStyle = {
@@ -83,12 +75,16 @@ const AccountCircle = () => {
   const handleGoogleSignIn = () => {
     signInWithPopup(auth, googleProvider)
       .then((response) => {
-        toast.success("Logged in successfully");
+        toast.success("Logged in successfully", {
+          theme: "colored",
+        });
         handleClose();
       })
       .catch((err) => {
         console.log(err.code);
-        toast.error(errorMapping[err.code] || "Some error occurred");
+        toast.error(errorMapping[err.code] || "Some error occurred", {
+          theme: "colored",
+        });
         console.log(err);
       });
   };

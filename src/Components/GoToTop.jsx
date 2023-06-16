@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 
 const GoToTop = () => {
-  // Define tooltipTitleStyle constant
-  const tooltipTitleStyle = {
-    color: "white", // Set the desired text color
-    fontSize: "16px", // Set the desired font size
-  };
   const [showButton, setShowButton] = useState(false);
 
   const handleScroll = () => {

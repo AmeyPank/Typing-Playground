@@ -180,6 +180,7 @@ a{
 }
 
 .time-modes, .word-modes{
+    margin-top: 1rem;
     display:flex;
 }
 .time, .no-of-word{
@@ -251,7 +252,7 @@ overflow:
 }
 .graph{
 width: 1000px;
-height: 500px;
+height: 1200px;
 margin-left: auto;
 margin-right: auto;
 

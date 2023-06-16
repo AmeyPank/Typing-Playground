@@ -1,10 +1,4 @@
-import React, {
-  createRef,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import UpperMenu from "./UpperMenu";
 import { useTestMode } from "../Context/TestModeContext";
 import { generate as randomWords } from "random-words";
@@ -13,8 +7,6 @@ import { Button, IconButton, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { toast } from "react-toastify";
 import { useTheme } from "../Context/ThemeContext";
-import LanguageIcon from "@mui/icons-material/Language";
-
 const TypingBox = () => {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -59,28 +51,42 @@ const TypingBox = () => {
   const [wordsSpanRef, setWordsSpanRef] = useState(emptySpans());
 
   const resetTest = () => {
-    clearInterval(intervalId);
-    setCountDown(testTime);
-    setCurrWordIndex(0);
     setCurrCharIndex(0);
+    setCurrWordIndex(0);
+
     setTestStart(false);
     setTestEnd(false);
-    setWordsArray(randomWords(100));
-    resetWordSpanRefClassname();
-    focusInput();
+    clearInterval(intervalId);
+    // setWordsArray(randomWords(100));
+    // resetWordSpanRefClassname();
+    // focusInput();
 
-    if (testMode === "word") {
-      setWordsArray(randomWords(testWords));
-      wordsSpanRef(emptySpans());
-      setCountDown(180);
-      setTime(180);
-    } else {
-      setWordsArray(randomWords(300));
-      setWordsSpanRef(emptySpans());
-      setCountDown(testTime);
-      setTime(testTime);
+    try {
+      if (testMode === "word") {
+        setWordsArray(randomWords(testWords));
+        setWordsSpanRef(emptySpans());
+        setCountDown(180);
+        setTime(180);
+      } else {
+        setWordsArray(randomWords(300));
+        setWordsSpanRef(emptySpans());
+        setCountDown(testTime);
+        setTime(testTime);
+      }
+      setGraphData([]);
+      setCorrectCharacter(0);
+      setCorrectWords(0);
+      setExtraCharacter(0);
+      setInCorrectCharacter(0);
+      setMissedCharacter(0);
+      resetWordSpanRefClassname();
+      focusInput();
+    } catch (error) {
+      console.error("An error occurred:", error);
+      // Handle the error here or throw it further if needed
     }
   };
+
   const redoTest = () => {
     try {
       setCurrCharIndex(0);
@@ -188,16 +194,16 @@ const TypingBox = () => {
     focusInput();
     // Update the state to set the initial class name
     wordsSpanRef[0].current.childNodes[0].className = "char current";
-  }, []);
+  }, [wordsSpanRef]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (initialRender) {
       console.log("initialRender");
       resetTest();
     } else {
       setInitialRender(true); //
     }
-  }, [testTime, testWords, testMode]);
+  }, [testTime, testWords, testMode, initialRender]);
   // Add a new useEffect to set the initial class name when wordsSpanRef is updated
   useEffect(() => {
     if (wordsSpanRef[0] && wordsSpanRef[0].current) {
@@ -228,7 +234,9 @@ const TypingBox = () => {
         ];
 
         if (blockedKeys.includes(e.key)) {
-          return toast.warning("Invalid Key"); // Ignore the blocked keys
+          return toast.warning("Invalid Key", {
+            theme: "colored",
+          }); // Ignore the blocked keys
         }
 
         // --------------------> Logic for spaces --------------------
@@ -325,14 +333,16 @@ const TypingBox = () => {
         if (e.key === allCurrChars[currCharIndex].innerText) {
           allCurrChars[currCharIndex].className = "char correct";
           setCorrectCharacter(correctCharacter + 1);
-          if(currWordIndex === wordsArray.length + 1 && currCharIndex === allCurrChars.length-1){
+          if (
+            currWordIndex === wordsArray.length + 1 &&
+            currCharIndex === allCurrChars.length - 1
+          ) {
             clearInterval(intervalId);
-            setCurrWordIndex(currWordIndex+1);
+            setCurrWordIndex(currWordIndex + 1);
             setTestEnd(true);
             return;
-
           }
-        }else {
+        } else {
           allCurrChars[currCharIndex].className = "char incorrect";
           setInCorrectCharacter(inCorrectCharacter + 1);
         }
@@ -356,21 +366,6 @@ const TypingBox = () => {
         " "
       ) : (
         <div>
-          <Tooltip
-            title={<span style={tooltipTitleStyle}>English</span>} // Apply styles to the title
-            placement="top"
-            enterDelay={500}
-            arrow
-            classes={{
-              tooltip: "custom-tooltip", // Add a custom class for additional styling
-            }}
-            style={tooltipStyle}
-          >
-            {/* IconButton */}
-            <IconButton color="inherit">
-              <LanguageIcon />
-            </IconButton>
-          </Tooltip>
           <UpperMenu countDown={countDown} s />
         </div>
       )}
@@ -423,14 +418,20 @@ const TypingBox = () => {
               }}
               style={tooltipStyle}
             >
-              <IconButton onClick={redoTest} color="inherit">
-                <RefreshIcon style={{ marginTop: "20px" }} />
+              <IconButton
+                style={{
+                  marginTop: "20px",
+                  backgroundColor: "theme.background",
+                }}
+                onClick={redoTest}
+                color="inherit"
+              >
+                <RefreshIcon />
               </IconButton>
             </Tooltip>
           </div>
         </div>
       )}
-
       <input
         type="text"
         className="hidden-input"

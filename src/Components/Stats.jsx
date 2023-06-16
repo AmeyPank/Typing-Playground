@@ -32,7 +32,7 @@ const Stats = ({
     resultsRef
       .add({
         wpm: wpm,
-        accuracy: accuracy+"%",
+        accuracy: `${accuracy}%`,
         timeStamp: new Date(),
         characters: `Correct: ${correctCharacter} | Incorrect: ${inCorectCharacter} | Missed: ${missedCharacter} | Extra: ${extraCharacter}`,
         userId: uid,

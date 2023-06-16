@@ -11,17 +11,23 @@ export const LoginForm = ({ handleClose }) => {
   const { theme } = useTheme();
   const handleSubmit = () => {
     if (!email || !password) {
-      toast.warning("🦄 Please enter your email and password");
+      toast.warning("Please enter your email and password", {
+        theme: "colored",
+      });
     }
     auth
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
-        toast.success("Logged in successfully");
+        toast.success("Logged in successfully", {
+          theme: "colored",
+        });
         handleClose();
       })
       .catch((err) => {
         console.log(err.code);
-        toast.error(errorMapping[err.code] || "Some error occurred");
+        toast.error(errorMapping[err.code] || "Some error occurred", {
+          theme: "colored",
+        });
         console.log(err);
       });
   };

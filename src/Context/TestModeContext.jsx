@@ -3,9 +3,9 @@ import { createContext, useContext, useState } from "react";
 const TestModeContext = createContext();
 
 export const TestModeContextProvider = ({ children }) => {
-  const [testTime, setTestTime] = useState(5);
+  const [testTime, setTestTime] = useState(15);
   const [testMode, setTestMode] = useState("time"); // time or word
-  const [testWords, setTestWords] = useState("10"); // 10 words
+  const [testWords, setTestWords] = useState(10); // 10 words
 
   const values = {
     testTime,

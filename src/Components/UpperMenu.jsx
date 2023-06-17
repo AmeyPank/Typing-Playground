@@ -4,7 +4,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useTheme } from "../Context/ThemeContext";
 
-const UpperMenu = ({ countDown }) => {
+const UpperMenu = ({ countDown, currWordIndex }) => {
   const {
     testTime,
     setTestTime,
@@ -40,6 +40,7 @@ const UpperMenu = ({ countDown }) => {
   const updateMode = (e) => {
     setTestMode(e.target.id);
   };
+
   return (
     // <div className="upper-menu">
     //   <div className="counter">{countDown}s</div>
@@ -59,7 +60,10 @@ const UpperMenu = ({ countDown }) => {
       {testMode === "time" ? (
         <div className="counter">{countDown}s</div>
       ) : (
-        <div className="counter">{testWords}</div>
+        <div className="counter">
+          {" "}
+          {currWordIndex}/{testWords}
+        </div>
       )}
 
       <div className="modes">
@@ -74,7 +78,10 @@ const UpperMenu = ({ countDown }) => {
           style={tooltipStyle}
         >
           {/* IconButton */}
-          <IconButton style={{backgroundColor:"theme.background"}} color="inherit">
+          <IconButton
+            style={{ backgroundColor: "theme.background" }}
+            color="inherit"
+          >
             <LanguageIcon />
           </IconButton>
         </Tooltip>

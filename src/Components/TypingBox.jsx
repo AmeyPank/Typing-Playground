@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import UpperMenu from "./UpperMenu";
 import { useTestMode } from "../Context/TestModeContext";
 import { generate as randomWords } from "random-words";
@@ -34,8 +34,6 @@ const TypingBox = () => {
   const [extraCharacter, setExtraCharacter] = useState(0);
   const [correctWords, setCorrectWords] = useState(0);
 
-  // --------------------> WPM function --------------------
-
   const [wordsArray, setWordsArray] = useState(() => {
     return randomWords(300);
   });
@@ -53,13 +51,9 @@ const TypingBox = () => {
   const resetTest = () => {
     setCurrCharIndex(0);
     setCurrWordIndex(0);
-
     setTestStart(false);
     setTestEnd(false);
     clearInterval(intervalId);
-    // setWordsArray(randomWords(100));
-    // resetWordSpanRefClassname();
-    // focusInput();
 
     try {
       if (testMode === "word") {
@@ -67,12 +61,13 @@ const TypingBox = () => {
         setWordsSpanRef(emptySpans());
         setCountDown(180);
         setTime(180);
-      } else {
+      } else if (testMode === "time") {
         setWordsArray(randomWords(300));
         setWordsSpanRef(emptySpans());
         setCountDown(testTime);
         setTime(testTime);
       }
+
       setGraphData([]);
       setCorrectCharacter(0);
       setCorrectWords(0);
@@ -102,7 +97,6 @@ const TypingBox = () => {
         setTime(testTime);
       }
       setGraphData([]);
-      setWordsArray(randomWords(300));
       setCorrectCharacter(0);
       setCorrectWords(0);
       setExtraCharacter(0);
@@ -142,8 +136,10 @@ const TypingBox = () => {
             return [
               ...graphData,
               [
-                time - latestCountDown + 1,
-                correctCharacter / 5 / ((time - latestCountDown + 1) / 60),
+                time - latestCountDown,
+                Math.round(
+                  correctCharacter / 5 / ((time - latestCountDown + 1) / 60)
+                ),
               ],
             ];
           });
@@ -171,8 +167,6 @@ const TypingBox = () => {
     });
     wordsSpanRef[0].current.childNodes[0].className = "char current";
   };
-  // -------------------->Handle the user input keyboard input --------------------
-
   // --------------------> WPM function --------------------
 
   const calculateWPM = () => {
@@ -194,29 +188,25 @@ const TypingBox = () => {
     focusInput();
     // Update the state to set the initial class name
     wordsSpanRef[0].current.childNodes[0].className = "char current";
-  }, [wordsSpanRef]);
+  }, []);
 
   useEffect(() => {
     if (initialRender) {
-      console.log("initialRender");
+      console.log("running");
       resetTest();
     } else {
       setInitialRender(true); //
     }
-    redoTest();
-  }, [testTime, testWords, testMode, initialRender]);
-  // Add a new useEffect to set the initial class name when wordsSpanRef is updated
-  useEffect(() => {
-    if (wordsSpanRef[0] && wordsSpanRef[0].current) {
-      const firstChild = wordsSpanRef[0].current.childNodes[0];
-      if (firstChild) {
-        firstChild.className = "current";
-      }
-    }
-  }, [wordsSpanRef]);
+  }, [testTime, testWords, testMode]);
+
+  // useMemo block to update the mode when it changes
+  useMemo(() => {
+    resetTest();
+  }, [testTime, testMode, testWords]);
 
   // -------------------->handleUserInput--------------------------------
   const handleUserInput = (e) => {
+    console.log(e);
     try {
       if (!testStart) {
         startTimer();
@@ -351,7 +341,7 @@ const TypingBox = () => {
         if (currCharIndex + 1 === allCurrChars.length) {
           allCurrChars[currCharIndex].className += " current-right";
         } else {
-          allCurrChars[currCharIndex + 1].className += "char current";
+          allCurrChars[currCharIndex + 1].className = "char current";
         }
         setCurrCharIndex(currCharIndex + 1);
       }
@@ -367,7 +357,7 @@ const TypingBox = () => {
         " "
       ) : (
         <div>
-          <UpperMenu countDown={countDown} s />
+          <UpperMenu countDown={countDown} currWordIndex={currWordIndex} />
         </div>
       )}
       {testEnd ? (

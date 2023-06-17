@@ -243,7 +243,11 @@ overflow:
     justify-content: center;
     align-items: center;
 }
-
+.counter{
+    align-items: center;
+    margin-top:auto;
+    margin-bottom:auto;
+}
 .table{
     width: 1000px;
 

@@ -49,7 +49,9 @@ const Stats = ({
     if (auth.currentUser) {
       pushDataToDB();
     } else {
-      toast.warning("Login to save results");
+      toast.warning("Login to save results", {
+        theme: "colored",
+      });
     }
   }, []);
 

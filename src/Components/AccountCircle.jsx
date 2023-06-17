@@ -46,11 +46,15 @@ const AccountCircle = () => {
     auth
       .signOut()
       .then((res) => {
-        toast.success("Logged out successfully");
+        toast.success("Logged out successfully", {
+          theme: "colored",
+        });
         navigate("/");
       })
       .catch((err) => {
-        toast.error("Not Able to logout");
+        toast.error("Not Able to logout", {
+          theme: "colored",
+        });
       });
   };
   const handleModalOpen = () => {

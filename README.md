@@ -2,69 +2,68 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# Typing App Setup
 
-In the project directory, you can run:
+To create a typing app with Firebase integration, authentication, database (Firestore), user page (homepage), themes, and support for different modes (time and words), follow the steps below:
 
-### `npm start`
+## Step 1: Create a new React app using Create React App
+npx create-react-app typing-app
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Step 2: Install the required dependencies
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Step 3: Set up Firebase in your application
 
-### `npm run build`
+- Create a Firebase project on the [Firebase console](https://console.firebase.google.com).
+- Install the Firebase CLI globally:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Authenticate the Firebase CLI with your Google account:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+- Initialize Firebase in your project:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Follow the prompts to select Firestore and enable hosting.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Replace the contents of the `src/App.js` file with the Firebase initialization code and configuration.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Step 4: Set up authentication using Firebase Authentication
 
-## Learn More
+- Enable the desired authentication methods (e.g., email/password, Google, etc.) in the Firebase console.
+- Implement the authentication logic in your React components using the Firebase Authentication SDK.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Step 5: Set up Firestore database
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Create a Firestore database in the Firebase console.
+- Implement the necessary Firestore operations (e.g., reading and writing data) in your React components using the Firestore SDK.
 
-### Code Splitting
+## Step 6: Create user pages (homepage)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Design and create the user pages (homepage) using React components.
+- Implement the necessary functionality and data fetching using the Firebase Authentication and Firestore SDKs.
 
-### Analyzing the Bundle Size
+## Step 7: Implement themes using styled-components
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Define different theme styles using styled-components.
+- Create a theme context to manage the current theme and provide it to the relevant components.
 
-### Making a Progressive Web App
+## Step 8: Implement modes (time and words)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Create a context to manage the current mode (time or words).
+- Update the relevant components to use the mode context and adjust their behavior accordingly.
 
-### Advanced Configuration
+## Step 9: Utilize React Hooks useMemo
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Identify components or calculations that can benefit from memoization using useMemo.
+- Wrap the relevant code with useMemo to optimize performance.
 
-### Deployment
+## Step 10: Apply basic CSS using styled-components
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Define styled components with CSS styles for different elements and components.
+- Use the styled components in your application to apply the desired styling.
 
-### `npm run build` fails to minify
+Throughout the process, refer to the documentation and examples of the libraries and tools you are using (e.g., Firebase, React, styled-components) for more details on their usage and integration.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+

@@ -414,7 +414,7 @@ const TypingBox = () => {
                   marginTop: "20px",
                   backgroundColor: "theme.background",
                 }}
-                onClick={redoTest}
+                onClick={resetTest}
                 color="inherit"
               >
                 <RefreshIcon />

@@ -163,10 +163,13 @@ const TypingBox = () => {
           j.remove();
         }
         j.className = "char";
+        return null;
       });
+      return null;
     });
     wordsSpanRef[0].current.childNodes[0].className = "char current";
   };
+
   // --------------------> WPM function --------------------
 
   const calculateWPM = () => {
@@ -199,7 +202,7 @@ const TypingBox = () => {
     }
   }, [testTime, testWords, testMode]);
 
-  // useMemo block to update the mode when it changes
+  // useMemo Hook to update the mode when it changes testwords changes and testtime changes
   useMemo(() => {
     resetTest();
   }, [testTime, testMode, testWords]);

@@ -7,6 +7,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import BentoIcon from "@mui/icons-material/Bento";
 import GoToTop from "./GoToTop";
 const Footer = () => {
   const { theme, setTheme, defaultTheme } = useTheme();
@@ -38,12 +39,8 @@ const Footer = () => {
         >
           <FacebookIcon style={{ marginRight: "4px" }} />
         </a>
-        <a
-          href="https://www.linkedin.com/in/amey-pankanti-260898189/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <InstagramIcon style={{ marginRight: "4px" }} />
+        <a href="https://bento.me/amey" target="_blank" rel="noreferrer">
+          <BentoIcon style={{ marginRight: "4px" }} />
         </a>
         <a
           href="https://www.linkedin.com/in/amey-pankanti-260898189/"
@@ -80,7 +77,7 @@ const Footer = () => {
             singleValue: (styles) => ({ ...styles, color: theme.title }),
           }}
         />
-        
+
         <GoToTop />
       </div>
     </div>

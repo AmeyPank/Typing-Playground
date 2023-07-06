@@ -70,7 +70,7 @@ const AccountCircle = () => {
     setOpen(false);
   };
 
-  const handleValuChange = (e, v) => {
+  const handleValueChange = (e, v) => {
     setValue(v);
   };
 
@@ -147,7 +147,7 @@ const AccountCircle = () => {
               background: "transparent",
             }}
           >
-            <Tabs value={value} onChange={handleValuChange} variant="fullWidth">
+            <Tabs value={value} onChange={handleValueChange} variant="fullWidth">
               <Tab label="login" style={{ color: theme.typeBoxText }}></Tab>
               <Tab label="signup" style={{ color: theme.typeBoxText }}></Tab>
             </Tabs>

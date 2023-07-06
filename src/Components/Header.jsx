@@ -1,7 +1,6 @@
 import React from "react";
 import AccountIcon from "./AccountCircle";
 import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
-// import CompareButton from './CompareButton'
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import InfoIcon from "@mui/icons-material/Info";
 import { Tooltip } from "@mui/material";
@@ -25,7 +24,7 @@ const Header = () => {
   return (
     <div className="header">
       <div className="logo">
-        <h1 style={{ fontFamily: "Lexend Deca" }}>funkeytype</h1>
+        <h1 style={{ fontFamily: "Legend Deca" }}>funkeytype</h1>
         <span
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >

@@ -8,7 +8,7 @@ const Stats = ({
   wpm,
   accuracy,
   correctCharacter,
-  inCorectCharacter,
+  inCorrectCharacter,
   missedCharacter,
   extraCharacter,
   graphData,
@@ -34,7 +34,7 @@ const Stats = ({
         wpm: wpm,
         accuracy: `${accuracy}%`,
         timeStamp: new Date(),
-        characters: `Correct: ${correctCharacter} | Incorrect: ${inCorectCharacter} | Missed: ${missedCharacter} | Extra: ${extraCharacter}`,
+        characters: `Correct: ${correctCharacter} | Incorrect: ${inCorrectCharacter} | Missed: ${missedCharacter} | Extra: ${extraCharacter}`,
         userId: uid,
       })
       .then((respponse) => {
@@ -64,7 +64,7 @@ const Stats = ({
         <div className="subtitle">{accuracy}</div>
         <div className="title">Characters</div>
         <div className="subtitle">
-          {correctCharacter} : {inCorectCharacter} : {missedCharacter} :{" "}
+          {correctCharacter} : {inCorrectCharacter} : {missedCharacter} :{" "}
           {extraCharacter}
         </div>
       </div>

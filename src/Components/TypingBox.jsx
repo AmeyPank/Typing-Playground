@@ -7,9 +7,9 @@ import { Button, IconButton, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { toast } from "react-toastify";
 import { useTheme } from "../Context/ThemeContext";
+
 const TypingBox = () => {
   const inputRef = useRef(null);
-  const containerRef = useRef(null);
   const [initialRender, setInitialRender] = useState(false);
   const { theme } = useTheme();
   const { testTime, testWords, testMode } = useTestMode(); //from context
@@ -269,7 +269,7 @@ const TypingBox = () => {
             ].className.replace("current", "");
           }
 
-          //scrollinig line condition
+          //scrolling line condition
           if (
             wordsSpanRef[currWordIndex + 1].current.offsetLeft <
             wordsSpanRef[currWordIndex].current.offsetLeft
@@ -374,7 +374,7 @@ const TypingBox = () => {
             wpm={calculateWPM()}
             accuracy={correctAccuracy()}
             correctCharacter={correctCharacter}
-            inCorectCharacter={inCorrectCharacter}
+            inCorrectCharacter={inCorrectCharacter}
             missedCharacter={missedCharacter}
             extraCharacter={extraCharacter}
             graphData={graphData}
@@ -386,7 +386,6 @@ const TypingBox = () => {
           <div
             className="type-box"
             id="type-box"
-            ref={containerRef}
             onClick={focusInput}
           >
             <div className="words">

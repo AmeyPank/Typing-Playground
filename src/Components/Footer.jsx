@@ -5,7 +5,6 @@ import { themeOptions } from "../Utils/theme";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import BentoIcon from "@mui/icons-material/Bento";
 import GoToTop from "./GoToTop";
@@ -77,7 +76,6 @@ const Footer = () => {
             singleValue: (styles) => ({ ...styles, color: theme.title }),
           }}
         />
-
         <GoToTop />
       </div>
     </div>

@@ -5,8 +5,11 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import InfoIcon from "@mui/icons-material/Info";
 import { Tooltip } from "@mui/material";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const iconStyle = {
     boxSizing: "border-box",
     marginTop: "18px",
@@ -16,17 +19,21 @@ const Header = () => {
     marginBottom: "auto",
   };
 
-  // Define tooltipTitleStyle constant
   const tooltipTitleStyle = {
-    color: "white", // Set the desired text color
-    fontSize: "16px", // Set the desired font size
+    color: "white",
+    fontSize: "16px",
   };
+
   return (
     <div className="header">
-      <div className="logo">
-        <h1 style={{ fontFamily: "Legend Deca" }}>funkeytype</h1>
+      <div
+        className="logo"
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer", userSelect: "none" }}
+      >
+        <h1 style={{ fontFamily: "Lexend Deca", margin: 0 }}>funkeytype</h1>
         <span
-          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+          style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}
         >
           <KeyboardRoundedIcon style={{ marginLeft: "8px" }} />
           <MilitaryTechIcon style={{ marginLeft: "8px" }} />
@@ -40,6 +47,7 @@ const Header = () => {
           cursor: "pointer",
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
         }}
       >
         <Tooltip

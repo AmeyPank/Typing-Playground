@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Graph from "./Graph";
-import { auth, db } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
+import { ResultService } from "../services/resultService";
+import { CreateResultDto } from "../dtos/CreateResultDto";
+import { ResultMapper } from "../mappers/ResultMapper";
 import { toast } from "react-toastify";
-import errorMapping from "../Utils/errorMapping";
 
 const Stats = ({
   wpm,
@@ -11,49 +13,51 @@ const Stats = ({
   inCorrectCharacter,
   missedCharacter,
   extraCharacter,
-  graphData,
+  graphData = [],
 }) => {
-  let timeSet = new Set();
+  const hasSavedRef = useRef(false);
 
-  const newGraph = graphData.filter((i) => {
-    if (!timeSet.has(i[0])) {
-      timeSet.add(i[0]);
-      return i;
-    }
-  });
-
-  const pushDataToDB = () => {
-    if (isNaN(accuracy)) {
-      toast.warning("Invalid Test");
-      return;
-    }
-    const resultsRef = db.collection("results");
-    const { uid } = auth.currentUser;
-    resultsRef
-      .add({
-        wpm: wpm,
-        accuracy: `${accuracy}%`,
-        timeStamp: new Date(),
-        characters: `Correct: ${correctCharacter} | Incorrect: ${inCorrectCharacter} | Missed: ${missedCharacter} | Extra: ${extraCharacter}`,
-        userId: uid,
-      })
-      .then((respponse) => {
-        toast.success("Data Saved To The Database");
-      })
-      .catch((err) => {
-        toast.error(errorMapping[err.code] || "Some error occurred");
-      });
-  };
+  const cleanGraphData = useMemo(() => {
+    return ResultMapper.toLiveChartCoordinates(graphData);
+  }, [graphData]);
 
   useEffect(() => {
-    if (auth.currentUser) {
-      pushDataToDB();
+    if (hasSavedRef.current) return;
+
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      if (isNaN(accuracy) || isNaN(wpm)) {
+        toast.warning("Invalid test result, not saved.");
+        return;
+      }
+
+      hasSavedRef.current = true;
+      const resultDto = new CreateResultDto({
+        wpm,
+        accuracy,
+        correctCharacter,
+        inCorrectCharacter,
+        missedCharacter,
+        extraCharacter,
+        userId: currentUser.uid,
+      });
+
+      ResultService.saveResult(resultDto)
+        .then(() => {
+          toast.success("Data Saved To The Database", { theme: "colored" });
+        })
+        .catch((err) => {
+          console.error("Save result error:", err);
+          toast.error(err.message || "Some error occurred", {
+            theme: "colored",
+          });
+        });
     } else {
       toast.warning("Login to save results", {
         theme: "colored",
       });
     }
-  }, []);
+  }, [wpm, accuracy, correctCharacter, inCorrectCharacter, missedCharacter, extraCharacter]);
 
   return (
     <div className="stats-box">
@@ -61,7 +65,7 @@ const Stats = ({
         <div className="title">WPM</div>
         <div className="subtitle">{wpm}</div>
         <div className="title">Accuracy</div>
-        <div className="subtitle">{accuracy}</div>
+        <div className="subtitle">{accuracy}%</div>
         <div className="title">Characters</div>
         <div className="subtitle">
           {correctCharacter} : {inCorrectCharacter} : {missedCharacter} :{" "}
@@ -69,8 +73,7 @@ const Stats = ({
         </div>
       </div>
       <div className="right-stats">
-        {/* {Graph wil go here}  */}
-        <Graph graphData={newGraph} />
+        <Graph graphData={cleanGraphData} type="time" />
       </div>
     </div>
   );

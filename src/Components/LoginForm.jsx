@@ -1,39 +1,45 @@
 import { Box, Button, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useTheme } from "../Context/ThemeContext";
-import { auth } from "../firebaseConfig";
+import { AuthService } from "../services/authService";
 import { toast } from "react-toastify";
-import errorMapping from "../Utils/errorMapping";
 
 export const LoginForm = ({ handleClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { theme } = useTheme();
-  const handleSubmit = () => {
+
+  const handleSubmit = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+
     if (!email || !password) {
       toast.warning("Please enter your email and password", {
         theme: "colored",
       });
+      return;
     }
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then((res) => {
-        toast.success("Logged in successfully", {
-          theme: "colored",
-        });
-        handleClose();
-      })
-      .catch((err) => {
-        console.log(err.code);
-        toast.error(errorMapping[err.code] || "Some error occurred", {
-          theme: "colored",
-        });
-        console.log(err);
+
+    try {
+      setIsSubmitting(true);
+      await AuthService.loginWithEmail(email, password);
+      toast.success("Logged in successfully", {
+        theme: "colored",
       });
+      handleClose();
+    } catch (err) {
+      toast.error(err.message || "Failed to log in", {
+        theme: "colored",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <Box
+      component="form"
+      onSubmit={handleSubmit}
       p={3}
       style={{
         display: "flex",
@@ -45,6 +51,7 @@ export const LoginForm = ({ handleClose }) => {
         variant="outlined"
         type="email"
         label="Enter Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
         InputLabelProps={{
           style: {
@@ -61,6 +68,7 @@ export const LoginForm = ({ handleClose }) => {
         variant="outlined"
         type="password"
         label="Enter Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
         InputLabelProps={{
           style: {
@@ -74,13 +82,16 @@ export const LoginForm = ({ handleClose }) => {
         }}
       />
       <Button
-        varient="contained"
+        variant="contained"
         size="large"
+        type="submit"
+        disabled={isSubmitting}
         style={{ backgroundColor: theme.typeBoxText, color: theme.title }}
-        onClick={handleSubmit}
       >
-        Login
+        {isSubmitting ? "Logging in..." : "Login"}
       </Button>
     </Box>
   );
 };
+
+export default LoginForm;

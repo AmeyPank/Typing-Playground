@@ -6,7 +6,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import BentoIcon from "@mui/icons-material/Bento";
+import Profile from "@mui/icons-material/Bento";
 import GoToTop from "./GoToTop";
 const Footer = () => {
   const { theme, setTheme, defaultTheme } = useTheme();
@@ -38,8 +38,12 @@ const Footer = () => {
         >
           <FacebookIcon style={{ marginRight: "4px" }} />
         </a>
-        <a href="https://bento.me/amey" target="_blank" rel="noreferrer">
-          <BentoIcon style={{ marginRight: "4px" }} />
+        <a
+          href="https://developer-portfolio-plum-one.vercel.app/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Profile style={{ marginRight: "4px" }} />
         </a>
         <a
           href="https://www.linkedin.com/in/amey-pankanti-260898189/"

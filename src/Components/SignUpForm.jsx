@@ -1,103 +1,119 @@
 import { Box, Button, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { auth } from "../firebaseConfig";
+import { AuthService } from "../services/authService";
 import { useTheme } from "../Context/ThemeContext";
 import { toast } from "react-toastify";
-import errorMapping from "../Utils/errorMapping";
 
 export const SignUpForm = ({ handleClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { theme } = useTheme();
 
-  const handleSubmit = () => {
-    if (!email || !password || !confirmPassword) {
-      toast.warning("Please enter all required fields");
+  const handleSubmit = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
 
+    if (!email || !password || !confirmPassword) {
+      toast.warning("Please enter all required fields", { theme: "colored" });
       return;
     }
-    if (password && !confirmPassword) {
-      toast.warning("Please enter all required fields");
+
+    if (password !== confirmPassword) {
+      toast.warning("Passwords do not match", { theme: "colored" });
+      return;
     }
 
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((res) => {
-        toast.success("Success user created");
-        handleClose();
-      })
-      .catch((err) => {
-        toast.warning(errorMapping[err.code] || "Some error occurred");
-      });
+    if (password.length < 6) {
+      toast.warning("Password must be at least 6 characters long", { theme: "colored" });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await AuthService.signUpWithEmail(email, password);
+      toast.success("Account created successfully", { theme: "colored" });
+      handleClose();
+    } catch (err) {
+      toast.error(err.message || "Failed to create account", { theme: "colored" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
   return (
-    <div>
-      <Box
-        p={3}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      p={3}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      <TextField
+        variant="outlined"
+        type="email"
+        label="Enter Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        InputLabelProps={{
+          style: {
+            color: theme.typeBoxText,
+          },
         }}
+        InputProps={{
+          style: {
+            color: theme.typeBoxText,
+          },
+        }}
+      />
+      <TextField
+        variant="outlined"
+        type="password"
+        label="Enter Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        InputLabelProps={{
+          style: {
+            color: theme.typeBoxText,
+          },
+        }}
+        InputProps={{
+          style: {
+            color: theme.typeBoxText,
+          },
+        }}
+      />
+      <TextField
+        variant="outlined"
+        type="password"
+        label="Confirm Password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        InputLabelProps={{
+          style: {
+            color: theme.typeBoxText,
+          },
+        }}
+        InputProps={{
+          style: {
+            color: theme.typeBoxText,
+          },
+        }}
+      />
+      <Button
+        variant="contained"
+        size="large"
+        type="submit"
+        disabled={isSubmitting}
+        style={{ backgroundColor: theme.typeBoxText, color: theme.title }}
       >
-        <TextField
-          variant="outlined"
-          type="email"
-          label="Enter Email"
-          onChange={(e) => setEmail(e.target.value)}
-          InputLabelProps={{
-            style: {
-              color: theme.typeBoxText,
-            },
-          }}
-          InputProps={{
-            style: {
-              color: theme.typeBoxText,
-            },
-          }}
-        />
-        <TextField
-          variant="outlined"
-          type="password"
-          label="Enter Password"
-          onChange={(e) => setPassword(e.target.value)}
-          InputLabelProps={{
-            style: {
-              color: theme.typeBoxText,
-            },
-          }}
-          InputProps={{
-            style: {
-              color: theme.typeBoxText,
-            },
-          }}
-        />
-        <TextField
-          variant="outlined"
-          type="password"
-          label="Enter Confirm Password"
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          InputLabelProps={{
-            style: {
-              color: theme.typeBoxText,
-            },
-          }}
-          InputProps={{
-            style: {
-              color: theme.typeBoxText,
-            },
-          }}
-        />
-        <Button
-          varient="contained"
-          size="large"
-          style={{ backgroundColor: theme.typeBoxText, color: theme.title }}
-          onClick={handleSubmit}
-        >
-          SignUp
-        </Button>
-      </Box>
-    </div>
+        {isSubmitting ? "Creating Account..." : "Sign Up"}
+      </Button>
+    </Box>
   );
 };
+
+export default SignUpForm;

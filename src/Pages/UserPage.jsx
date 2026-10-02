@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -8,49 +8,45 @@ import Graph from "../Components/Graph";
 import UserInfo from "../Components/UserInfo";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import { ResultService } from "../services/resultService";
+
 const UserPage = () => {
   const [data, setData] = useState([]);
   const [graphData, setGraphData] = useState([]);
-  const [dataLoading, setDataloading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
 
-  const fetchUserData = () => {
-    const resultsRef = db.collection("results");
-    const { uid } = auth.currentUser;
-
-    let tempData = [];
-    let tempGraphData = [];
-    resultsRef
-      .where("userId", "==", uid)
-      .orderBy("timeStamp", "desc")
-      .get()
-      .then((snapshot) => {
-        // console.log(snapshot);
-        snapshot.docs.forEach((doc) => {
-          // ==========================================console.log(doc.data()); // to get the data from the snapshot
-          tempData.push({ ...doc.data() });
-          tempGraphData.push([
-            doc.data().timeStamp.toDate().toLocaleString().split(",")[0],
-            doc.data().wpm,
-          ]);
-        });
-        setData(tempData);
-        setGraphData(tempGraphData.reverse());
-        setDataloading(false);
-        console.log(data);
-      });
-  };
-
-  // Added theloading function for solving the error Cannot destructure property 'uid' of
   useEffect(() => {
-    if (!loading) {
-      fetchUserData();
-    }
-    if (!loading && !user) {
+    if (loading) return;
+
+    if (!user) {
       navigate("/");
+      return;
     }
-  }, [loading]);
+
+    let isMounted = true;
+    setDataLoading(true);
+
+    ResultService.getUserResults(user.uid)
+      .then(({ results, graphData: historicalGraphData }) => {
+        if (isMounted) {
+          setData(results);
+          setGraphData(historicalGraphData);
+          setDataLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load user results:", error);
+        if (isMounted) {
+          setDataLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, loading, navigate]);
 
   if (loading || dataLoading) {
     return (

@@ -3,6 +3,11 @@ import { useTestMode } from "../Context/TestModeContext";
 import { IconButton, Tooltip } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useTheme } from "../Context/ThemeContext";
+import {
+  TEST_MODES,
+  TIME_OPTIONS,
+  WORD_OPTIONS,
+} from "../constants/appConstants";
 
 const UpperMenu = ({ countDown, currWordIndex }) => {
   const {
@@ -15,7 +20,6 @@ const UpperMenu = ({ countDown, currWordIndex }) => {
   } = useTestMode();
   const { theme } = useTheme();
 
-  // Define tooltipStyle constant
   const tooltipStyle = {
     backgroundColor: theme.background,
     color: "#fff",
@@ -24,62 +28,46 @@ const UpperMenu = ({ countDown, currWordIndex }) => {
     padding: "8px 12px",
   };
 
-  // Define tooltipTitleStyle constant
   const tooltipTitleStyle = {
     color: "white",
     fontSize: "16px",
   };
-  const updateTime = (e) => {
-    // const selectedTime = Number(e.target.id);
-    setTestTime(e.target.id);
+
+  const updateTime = (time) => {
+    setTestTime(time);
   };
-  const updateWord = (e) => {
-    const selectedWord = parseInt(e.target.id);
-    setTestWords(selectedWord);
+
+  const updateWord = (words) => {
+    setTestWords(words);
   };
-  const updateMode = (e) => {
-    setTestMode(e.target.id);
+
+  const updateMode = (mode) => {
+    setTestMode(mode);
   };
 
   return (
-    // <div className="upper-menu">
-    //   <div className="counter">{countDown}s</div>
-    //   <div className="time-modes">
-    //     <div className="time" id="15" onClick={updateTime}>
-    //       15s
-    //     </div>
-    //     <div className="time" id="30" onClick={updateTime}>
-    //       30s
-    //     </div>
-    //     <div className="time" id="60" onClick={updateTime}>
-    //       60s
-    //     </div>
-    //   </div>
-    // </div>
     <div className="upper-menu">
-      {testMode === "time" ? (
+      {testMode === TEST_MODES.TIME ? (
         <div className="counter">{countDown}s</div>
       ) : (
         <div className="counter">
-          {" "}
           {currWordIndex}/{testWords}
         </div>
       )}
 
       <div className="modes">
         <Tooltip
-          title={<span style={tooltipTitleStyle}>English</span>} // Apply styles to the title
+          title={<span style={tooltipTitleStyle}>English</span>}
           placement="top"
           enterDelay={500}
           arrow
           classes={{
-            tooltip: "custom-tooltip", // Add a custom class for additional styling
+            tooltip: "custom-tooltip",
           }}
           style={tooltipStyle}
         >
-          {/* IconButton */}
           <IconButton
-            style={{ backgroundColor: "theme.background" }}
+            style={{ backgroundColor: theme.background }}
             color="inherit"
           >
             <LanguageIcon />
@@ -87,92 +75,48 @@ const UpperMenu = ({ countDown, currWordIndex }) => {
         </Tooltip>
         <span>Mode - </span>
         <span
-          className={testMode === "time" ? "active mode" : "mode"}
-          id="time"
-          onClick={updateMode}
+          className={testMode === TEST_MODES.TIME ? "active mode" : "mode"}
+          onClick={() => updateMode(TEST_MODES.TIME)}
         >
           Time
         </span>
         <span
-          className={testMode === "word" ? "active mode" : "mode"}
-          id="word"
-          onClick={updateMode}
+          className={testMode === TEST_MODES.WORD ? "active mode" : "mode"}
+          onClick={() => updateMode(TEST_MODES.WORD)}
         >
           Word
         </span>
       </div>
 
-      {testMode === "time" ? (
+      {testMode === TEST_MODES.TIME ? (
         <div className="time-modes">
-          <div
-            className={
-              testMode === "time" && testTime === 15
-                ? "active-value time"
-                : "time"
-            }
-            id={15}
-            onClick={updateTime}
-          >
-            15s
-          </div>
-          <div
-            className={
-              testMode === "time" && testTime === 30
-                ? "active-value time"
-                : "time"
-            }
-            id={30}
-            onClick={updateTime}
-          >
-            30s
-          </div>
-          <div
-            className={
-              testMode === "time" && testTime === 60
-                ? "active-value time"
-                : "time"
-            }
-            id={60}
-            onClick={updateTime}
-          >
-            60s
-          </div>
+          {TIME_OPTIONS.map((timeOption) => (
+            <div
+              key={timeOption}
+              className={
+                Number(testTime) === timeOption ? "active-value time" : "time"
+              }
+              onClick={() => updateTime(timeOption)}
+            >
+              {timeOption}s
+            </div>
+          ))}
         </div>
       ) : (
         <div className="word-modes">
-          <div
-            className={
-              testMode === "word" && testWords === 10
-                ? "active-value no-of-word"
-                : "no-of-word"
-            }
-            id={10}
-            onClick={updateWord}
-          >
-            10
-          </div>
-          <div
-            className={
-              testMode === "word" && testWords === 20
-                ? "active-value no-of-word"
-                : "no-of-word"
-            }
-            id={20}
-            onClick={updateWord}
-          >
-            20
-          </div>
-          <div
-            className={
-              testMode === "word" && testWords === 30
-                ? "active-value no-of-word"
-                : "no-of-word"
-            }
-            id={30}
-            onClick={updateWord}
-          >
-            30
-          </div>
+          {WORD_OPTIONS.map((wordOption) => (
+            <div
+              key={wordOption}
+              className={
+                Number(testWords) === wordOption
+                  ? "active-value no-of-word"
+                  : "no-of-word"
+              }
+              onClick={() => updateWord(wordOption)}
+            >
+              {wordOption}
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import UpperMenu from "./UpperMenu";
 import { useTestMode } from "../Context/TestModeContext";
 import { generate as randomWords } from "random-words";
@@ -7,6 +7,7 @@ import { Button, IconButton, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { toast } from "react-toastify";
 import { useTheme } from "../Context/ThemeContext";
+import { calculateAccuracy, calculateWPM } from "../Utils/typingCalculations";
 
 const TypingBox = () => {
   const inputRef = useRef(null);
@@ -170,42 +171,44 @@ const TypingBox = () => {
     wordsSpanRef[0].current.childNodes[0].className = "char current";
   };
 
-  // --------------------> WPM function --------------------
-
-  const calculateWPM = () => {
-    return Math.round(correctCharacter / 5 / (testTime / 60));
+  const getTimeSpent = () => {
+    const totalTime = testMode === "word" ? 180 : testTime;
+    return Math.max(1, totalTime - countDown);
   };
 
-  // --------------------> CorrectAccuracy function --------------------
-
-  const correctAccuracy = () => {
-    return Math.round((correctWords / currWordIndex) * 100);
+  const getWpmResult = () => {
+    return calculateWPM(correctCharacter, getTimeSpent());
   };
-  // --------------------> focusInput function --------------------
+
+  const getAccuracyResult = () => {
+    return calculateAccuracy(correctWords, currWordIndex);
+  };
 
   const focusInput = () => {
-    inputRef.current.focus();
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   useEffect(() => {
     focusInput();
-    // Update the state to set the initial class name
-    wordsSpanRef[0].current.childNodes[0].className = "char current";
+    if (wordsSpanRef[0]?.current?.childNodes[0]) {
+      wordsSpanRef[0].current.childNodes[0].className = "char current";
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (initialRender) {
-      console.log("running");
       resetTest();
     } else {
-      setInitialRender(true); //
+      setInitialRender(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testTime, testWords, testMode]);
-
-  // useMemo Hook to update the mode when it changes testwords changes and testtime changes
-  useMemo(() => {
-    resetTest();
-  }, [testTime, testMode, testWords]);
 
   // -------------------->handleUserInput--------------------------------
   const handleUserInput = (e) => {
@@ -284,7 +287,7 @@ const TypingBox = () => {
 
           return;
         }
-        if (e.keyCode === 8) {
+        if (e.keyCode === 8 || e.key === "Backspace") {
           // --------------------> Logic for backspace handling --------------------
 
           if (currCharIndex !== 0) {
@@ -294,7 +297,9 @@ const TypingBox = () => {
                 allCurrChars[currCharIndex - 1].className.includes("extra")
               ) {
                 allCurrChars[currCharIndex - 1].remove();
-                allCurrChars[currCharIndex - 2].className += " current-right";
+                if (currCharIndex >= 2 && allCurrChars[currCharIndex - 2]) {
+                  allCurrChars[currCharIndex - 2].className += " current-right";
+                }
               }
 
               if (allCurrChars[currCharIndex - 1]) {
@@ -305,8 +310,12 @@ const TypingBox = () => {
               return;
             }
 
-            allCurrChars[currCharIndex].className = "";
-            allCurrChars[currCharIndex - 1].className = "current";
+            if (allCurrChars[currCharIndex]) {
+              allCurrChars[currCharIndex].className = "char";
+            }
+            if (allCurrChars[currCharIndex - 1]) {
+              allCurrChars[currCharIndex - 1].className = "char current";
+            }
             setCurrCharIndex(currCharIndex - 1);
           }
 
@@ -371,8 +380,8 @@ const TypingBox = () => {
             </Button>
           </div>
           <Stats
-            wpm={calculateWPM()}
-            accuracy={correctAccuracy()}
+            wpm={getWpmResult()}
+            accuracy={getAccuracyResult()}
             correctCharacter={correctCharacter}
             inCorrectCharacter={inCorrectCharacter}
             missedCharacter={missedCharacter}
@@ -414,7 +423,8 @@ const TypingBox = () => {
               <IconButton
                 style={{
                   marginTop: "20px",
-                  backgroundColor: "theme.background",
+                  backgroundColor: theme.background,
+                  color: theme.title,
                 }}
                 onClick={resetTest}
                 color="inherit"
